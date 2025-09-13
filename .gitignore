@@ -1,0 +1,8 @@
+/.settings
+*.prefs
+*.ioc
+*.launch
+*.project
+*.mxproject
+*.cproject
+/Debug
