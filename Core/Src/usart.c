@@ -1,37 +1,16 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file    usart.c
-  * @brief   This file provides code for the configuration
-  *          of the USART instances.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
-/* Includes ------------------------------------------------------------------*/
 #include "usart.h"
+#include "stm32f3xx_ll_gpio.h"
+#include "stm32f3xx_ll_system.h"
+#include "stm32f3xx_ll_bus.h"
+#include "assert.h"
 
-/* USER CODE BEGIN 0 */
+#define USART_TX_Pin LL_GPIO_PIN_2
+#define USART_TX_GPIO_Port GPIOA
+#define USART_RX_Pin LL_GPIO_PIN_3
+#define USART_RX_GPIO_Port GPIOA
 
-/* USER CODE END 0 */
-
-/* USART2 init function */
-
-void MX_USART2_UART_Init(void)
+void UART_CMD_Init(void)
 {
-
-  /* USER CODE BEGIN USART2_Init 0 */
-
-  /* USER CODE END USART2_Init 0 */
 
   LL_USART_InitTypeDef USART_InitStruct = {0};
 
@@ -53,34 +32,23 @@ void MX_USART2_UART_Init(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
   LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN USART2_Init 1 */
-
-  /* USER CODE END USART2_Init 1 */
-  USART_InitStruct.BaudRate = 38400;
+  USART_InitStruct.BaudRate = 115200;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
   USART_InitStruct.Parity = LL_USART_PARITY_NONE;
   USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
   USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
   USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
-  LL_USART_Init(USART2, &USART_InitStruct);
-  LL_USART_DisableIT_CTS(USART2);
-  LL_USART_ConfigAsyncMode(USART2);
-  LL_USART_Enable(USART2);
-  /* USER CODE BEGIN USART2_Init 2 */
-
-  /* USER CODE END USART2_Init 2 */
+  LL_USART_Init(CMD_UART, &USART_InitStruct);
+  LL_USART_DisableIT_CTS(CMD_UART);
+  LL_USART_ConfigAsyncMode(CMD_UART);
+  LL_USART_Enable(CMD_UART);
 
 }
 /* USART3 init function */
 
-void MX_USART3_UART_Init(void)
+void USART_DEBUG_Init(void)
 {
-
-  /* USER CODE BEGIN USART3_Init 0 */
-
-  /* USER CODE END USART3_Init 0 */
-
   LL_USART_InitTypeDef USART_InitStruct = {0};
 
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -101,26 +69,21 @@ void MX_USART3_UART_Init(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN USART3_Init 1 */
-
-  /* USER CODE END USART3_Init 1 */
-  USART_InitStruct.BaudRate = 38400;
+  USART_InitStruct.BaudRate = 115200;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
   USART_InitStruct.StopBits = LL_USART_STOPBITS_1;
   USART_InitStruct.Parity = LL_USART_PARITY_NONE;
   USART_InitStruct.TransferDirection = LL_USART_DIRECTION_TX_RX;
   USART_InitStruct.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
   USART_InitStruct.OverSampling = LL_USART_OVERSAMPLING_16;
-  LL_USART_Init(USART3, &USART_InitStruct);
-  LL_USART_DisableIT_CTS(USART3);
-  LL_USART_ConfigAsyncMode(USART3);
-  LL_USART_Enable(USART3);
-  /* USER CODE BEGIN USART3_Init 2 */
-
-  /* USER CODE END USART3_Init 2 */
-
+  LL_USART_Init(DEBUG_UART, &USART_InitStruct);
+  LL_USART_DisableIT_CTS(DEBUG_UART);
+  LL_USART_ConfigAsyncMode(DEBUG_UART);
+  LL_USART_Enable(DEBUG_UART);
 }
 
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
+void UART_putChar(const USART_TypeDef *USARTx, char ch){
+	assert(USARTx == CMD_UART || USARTx == DEBUG_UART);
+	while(!LL_USART_IsActiveFlag_TXE(USARTx));
+	LL_USART_TransmitData8(USARTx, ch);
+}
