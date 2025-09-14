@@ -45,8 +45,11 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 16K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 64K
+  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 32K
+  APP    (rx)    : ORIGIN = 0x8008000,     LENGTH = (32K - 4)
 }
+
+_app_start = ORIGIN(APP);
 
 /* Sections */
 SECTIONS
@@ -172,6 +175,11 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM
+
+  .crc :
+  {
+    KEEP(*(.crc))   /* pull in the symbol */
+  } >FLASH
 
   /* Remove information from the compiler libraries */
   /DISCARD/ :

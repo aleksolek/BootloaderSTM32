@@ -22,52 +22,18 @@
 #include "gpio.h"
 #include "logger.h"
 #include "usart.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
+#include "bl1.h"
+#include <stdbool.h>
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 
 /**
  * @brief  The application entry point.
  * @retval int
  */
 int main(void) {
-  /* USER CODE BEGIN 1 */
 
-  /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -79,37 +45,32 @@ int main(void) {
   /* System interrupt init*/
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
+  GPIO_Init();
   UART_CMD_Init();
   USART_DEBUG_Init();
-  MX_CRC_Init();
-  /* USER CODE BEGIN 2 */
+  CRC_Init();
 
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1) {
-    /* USER CODE END WHILE */
-    LOG_debug("Hello %s", "world!");
-    LL_mDelay(1000);
-
-    LL_mDelay(1000);
-    /* USER CODE BEGIN 3 */
+  LOG_debug("Hello from BL1");
+  if(GPIO_isUserButtonPressed()){
+	  LOG_debug("User button pressed. Entering BL mode");
+  } else {
+	  LOG_debug("User button not pressed. Loading application");
+	  bl1_jump_to_user_app();
   }
-  /* USER CODE END 3 */
+  while (1) {
+
+
+    LL_mDelay(1000);
+
+    LL_mDelay(1000);
+
+  }
+
 }
 
 /**

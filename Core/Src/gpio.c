@@ -1,37 +1,13 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file    gpio.c
-  * @brief   This file provides code for the configuration
-  *          of all used GPIO pins.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
-
-/* Includes ------------------------------------------------------------------*/
 #include "gpio.h"
+#include "stm32f3xx_ll_gpio.h"
+#include "stm32f3xx_ll_exti.h"
+#include "stm32f3xx_ll_bus.h"
+#include "stm32f3xx_ll_system.h"
 
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-/*----------------------------------------------------------------------------*/
-/* Configure GPIO                                                             */
-/*----------------------------------------------------------------------------*/
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
-
+#define B1_Pin LL_GPIO_PIN_13
+#define B1_GPIO_Port GPIOC
+#define LD2_Pin LL_GPIO_PIN_13
+#define LD2_GPIO_Port GPIOB
 /** Configure pins as
         * Analog
         * Input
@@ -39,7 +15,7 @@
         * EVENT_OUT
         * EXTI
 */
-void MX_GPIO_Init(void)
+void GPIO_Init(void)
 {
 
   LL_EXTI_InitTypeDef EXTI_InitStruct = {0};
@@ -81,6 +57,7 @@ void MX_GPIO_Init(void)
 
 }
 
-/* USER CODE BEGIN 2 */
-
-/* USER CODE END 2 */
+bool GPIO_isUserButtonPressed(void){
+    uint32_t port = LL_GPIO_ReadInputPort(B1_GPIO_Port);
+    return !(port & B1_Pin);
+}

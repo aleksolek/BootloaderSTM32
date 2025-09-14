@@ -26,21 +26,12 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
 
-/* USER CODE BEGIN Includes */
+#include <stdint.h>
 
-/* USER CODE END Includes */
+void CRC_Init(void);
+uint32_t CRC_compute(uint32_t startAddress, uint32_t endAddress);
 
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
-
-void MX_CRC_Init(void);
-
-/* USER CODE BEGIN Prototypes */
-
-/* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }
